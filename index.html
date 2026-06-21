@@ -1,1 +1,346 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ Grade 11 Advanced Inspire - Rotational Work (3.2)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Cairo', sans-serif; }
+        body.en-mode { font-family: 'Inter', sans-serif; }
+        .correct { background-color: #dcfce7 !important; border-color: #16a34a !important; }
+        .incorrect { background-color: #fee2e2 !important; border-color: #dc2626 !important; }
+        .formula { font-family: 'Times New Roman', serif; font-style: italic; direction: ltr; display: inline-block; }
+        .timer-warning { color: #dc2626 !important; animation: pulse 1s infinite; }
+        @keyframes pulse { 50% { opacity: 0.7; } }
+        @media print { .no-print { display: none !important; } }
+        .success-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 0.875rem; }
+        .grade-excellent { background: #dcfce7; color: #166534; }
+        .grade-good { background: #fef3c7; color: #92400e; }
+        .grade-pass { background: #dbeafe; color: #1e40af; }
+        .grade-fail { background: #fee2e2; color: #991b1b; }
+        .lang-switch {
+            position: fixed; top: 16px; left: 16px; z-index: 100;
+            background: white; padding: 6px; border-radius: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15); display: flex; gap: 4px;
+            border: 2px solid #0d9488;
+        }
+        [dir="ltr"] .lang-switch { left: auto; right: 16px; }
+        .lang-btn {
+            padding: 6px 14px; border-radius: 20px; cursor: pointer; font-weight: bold;
+            transition: all 0.3s; border: none; font-size: 0.875rem;
+            background: transparent; color: #6b7280;
+        }
+        .lang-btn.active { background: #0d9488; color: white; box-shadow: 0 2px 6px rgba(13,148,136,0.4); }
+        .lang-btn:hover:not(.active) { background: #f0fdfa; color: #0d9488; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 p-4 md:p-8 min-h-screen">
 
+    <div class="lang-switch no-print">
+        <button class="lang-btn active" onclick="setLanguage('ar')" id="btn-ar">عربي</button>
+        <button class="lang-btn" onclick="setLanguage('en')" id="btn-en">EN</button>
+    </div>
+
+    <div id="timer-container" class="max-w-4xl mx-auto mb-4 text-center no-print">
+        <div class="bg-white p-4 rounded-xl shadow-md inline-block border-2 border-teal-100">
+            <span class="text-gray-600 ml-2" data-ar="⏱️ الوقت المتبقي:" data-en="⏱️ Time Remaining:">⏱️ الوقت المتبقي:</span>
+            <span id="timer" class="text-2xl font-bold text-teal-600 font-mono">60:00</span>
+        </div>
+    </div>
+
+    <div class="max-w-4xl mx-auto mb-6 flex flex-wrap gap-3 justify-center no-print">
+        <button onclick="toggleAnswers()" class="bg-teal-600 hover:bg-teal-700 text-white px-5 py-2 rounded-lg font-medium transition shadow cursor-pointer" data-ar="👁️ إظهار / إخفاء الإجابات" data-en="👁️ Show / Hide Answers">👁️ إظهار / إخفاء الإجابات</button>
+        <button onclick="window.print()" class="bg-gray-800 hover:bg-gray-900 text-white px-5 py-2 rounded-lg font-medium transition shadow cursor-pointer" data-ar="🖨️ طباعة / PDF" data-en="🖨️ Print / PDF">🖨️ طباعة / PDF</button>
+    </div>
+
+    <header class="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-md mb-8 border-r-4 border-teal-600">
+        <div class="text-center">
+            <h1 class="text-2xl md:text-3xl font-bold text-gray-900 mb-2" data-ar="⚡ فيزياء الصف الحادي عشر متقدم - Inspire" data-en="⚡ Grade 11 Advanced Physics - Inspire">⚡ فيزياء الصف الحادي عشر متقدم - Inspire</h1>
+            <h2 class="text-lg text-teal-600 font-semibold" data-ar="الدرس 3.2: الشغل الدوراني" data-en="Lesson 3.2: Rotational Work">الدرس 3.2: الشغل الدوراني</h2>
+            <p class="text-sm text-gray-600 mt-2" data-ar="الشغل الدوراني، القدرة الدورانية، مبرهنة الشغل-الطاقة، وحفظ الطاقة" data-en="Rotational Work, Rotational Power, Work-Energy Theorem & Energy Conservation">الشغل الدوراني، القدرة الدورانية، مبرهنة الشغل-الطاقة، وحفظ الطاقة</p>
+        </div>
+        <div class="mt-4 flex flex-wrap justify-center gap-4 text-sm text-gray-600">
+            <span><span data-ar="📅 التاريخ:" data-en="📅 Date:">📅 التاريخ:</span> <input type="text" class="border-b border-gray-400 bg-transparent w-28 text-center"></span>
+            <span><span data-ar="👤 الاسم:" data-en="👤 Name:">👤 الاسم:</span> <input type="text" id="studentName" class="border-b border-gray-400 bg-transparent w-32 text-center" placeholder="Enter name"></span>
+            <span><span data-ar="🏫 الشعبة:" data-en="🏫 Class:">🏫 الشعبة:</span> <input type="text" id="studentClass" class="border-b border-gray-400 bg-transparent w-28 text-center" placeholder="Class"></span>
+            <span><span data-ar="⏱️ المدة: 60 دقيقة" data-en="⏱️ Duration: 60 min">⏱️ المدة: 60 دقيقة</span></span>
+            <span><span data-ar="📊 المجموع: 100 درجة" data-en="📊 Total: 100 pts">📊 المجموع: 100 درجة</span></span>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto space-y-8" id="exam-content"></main>
+
+    <div class="text-center no-print pb-8 mt-8">
+        <button onclick="gradeExam()" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white text-lg px-10 py-4 rounded-xl font-bold shadow-xl transition transform hover:scale-105 cursor-pointer" data-ar="📝 تسليم وتصحيح الامتحان" data-en="📝 Submit & Grade Exam">📝 تسليم وتصحيح الامتحان</button>
+    </div>
+
+    <div id="results-panel" class="max-w-4xl mx-auto mt-8 bg-white p-8 rounded-2xl shadow-2xl border-t-4 border-emerald-500 hidden no-print">
+        <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center" data-ar="📊 نتائج الامتحان" data-en="📊 Exam Results">📊 نتائج الامتحان</h2>
+        <div class="grid md:grid-cols-3 gap-4 mb-6">
+            <div class="bg-blue-50 p-4 rounded-xl text-center"><p data-ar="اسم الطالب" data-en="Student Name">اسم الطالب</p><p id="res-name" class="font-bold text-xl text-teal-700">-</p></div>
+            <div class="bg-purple-50 p-4 rounded-xl text-center"><p data-ar="التاريخ" data-en="Date">التاريخ</p><p id="res-date" class="font-bold text-xl text-purple-700">-</p></div>
+            <div class="bg-emerald-50 p-4 rounded-xl text-center"><p data-ar="المجموع" data-en="Score">المجموع</p><p id="res-total" class="font-bold text-3xl text-emerald-600">0 / 100</p></div>
+        </div>
+        <div class="text-center mb-6">
+            <span id="success-badge" class="success-badge grade-excellent">-</span>
+            <p id="success-percent" class="text-4xl font-bold text-emerald-600 mt-2">100%</p>
+            <p class="text-sm text-gray-500" data-ar="نسبة النجاح" data-en="Success Rate">نسبة النجاح</p>
+        </div>
+        <div class="bg-gray-50 p-6 rounded-xl mb-6">
+            <h3 class="font-bold text-lg mb-4 text-gray-800" data-ar="📈 تفصيل الأداء حسب القسم:" data-en="📈 Performance Breakdown:">📈 تفصيل الأداء حسب القسم:</h3>
+            <div class="space-y-3">
+                <div class="flex justify-between items-center"><span class="text-gray-700" data-ar="الشغل الدوراني" data-en="Rotational Work">الشغل الدوراني</span><span id="sec1-score" class="font-bold text-teal-600">0/4</span></div>
+                <div class="flex justify-between items-center"><span class="text-gray-700" data-ar="القدرة الدورانية" data-en="Rotational Power">القدرة الدورانية</span><span id="sec2-score" class="font-bold text-teal-600">0/4</span></div>
+                <div class="flex justify-between items-center"><span class="text-gray-700" data-ar="مبرهنة الشغل-الطاقة" data-en="Work-Energy Theorem">مبرهنة الشغل-الطاقة</span><span id="sec3-score" class="font-bold text-teal-600">0/4</span></div>
+                <div class="flex justify-between items-center"><span class="text-gray-700" data-ar="المقارنة: خطي مقابل دوراني" data-en="Linear vs Rotational">المقارنة: خطي مقابل دوراني</span><span id="sec4-score" class="font-bold text-teal-600">0/4</span></div>
+                <div class="flex justify-between items-center"><span class="text-gray-700" data-ar="حفظ الطاقة والمسائل التطبيقية" data-en="Energy Conservation & Applications">حفظ الطاقة والمسائل التطبيقية</span><span id="sec5-score" class="font-bold text-teal-600">0/4</span></div>
+            </div>
+        </div>
+        <div class="text-center mb-6">
+            <button id="sendEmailBtn" onclick="sendResultsToEmail()" class="bg-gradient-to-r from-teal-600 to-cyan-600 hover:from-teal-700 hover:to-cyan-700 text-white text-lg px-8 py-3 rounded-xl font-bold shadow-xl transition transform hover:scale-105 cursor-pointer" data-ar="📧 إرسال النتائج للمعلم" data-en="📧 Send Results to Teacher">📧 إرسال النتائج للمعلم</button>
+            <p id="emailStatus" class="text-sm mt-2 text-center font-medium"></p>
+        </div>
+        <div class="flex gap-3 justify-center">
+            <button onclick="window.print()" class="bg-gray-700 text-white px-6 py-3 rounded-lg font-semibold" data-ar="🖨️ طباعة النتائج" data-en="🖨️ Print Results">🖨️ طباعة النتائج</button>
+        </div>
+    </div>
+
+    <footer class="max-w-4xl mx-auto mt-10 mb-8 text-center text-gray-500 text-sm no-print">
+        © <span data-ar="الفيزياء للصف الحادي عشر متقدم - Inspire | الدرس 3.2: الشغل الدوراني" data-en="Grade 11 Advanced Physics - Inspire | Lesson 3.2: Rotational Work">الفيزياء للصف الحادي عشر متقدم - Inspire | الدرس 3.2: الشغل الدوراني</span> | Mr. Mohammed Hesham
+    </footer>
+
+<script>
+const examData = {
+    sections: [
+        {
+            id: 'sec1',
+            title: { ar: '🔹 الجزء الأول: الشغل الدوراني', en: '🔹 Part 1: Rotational Work' },
+            questions: [
+                { q: { ar: 'الشغل الدوراني (W) يُحسب من العلاقة:', en: 'Rotational work (W) is calculated from:' }, options: [{ ar: 'W = τ × θ', en: 'W = τ × θ' }, { ar: 'W = τ / θ', en: 'W = τ / θ' }, { ar: 'W = τ × ω', en: 'W = τ × ω' }, { ar: 'W = I × α', en: 'W = I × α' }], correct: 0, answer: { ar: 'الشغل الدوراني = عزم القوة × الإزاحة الزاوية (W = τθ)', en: 'Rotational work = torque × angular displacement (W = τθ)' } },
+                { q: { ar: 'وحدة الشغل الدوراني في النظام الدولي هي:', en: 'The SI unit of rotational work is:' }, options: [{ ar: 'N·m أو J', en: 'N·m or J' }, { ar: 'W أو J/s', en: 'W or J/s' }, { ar: 'kg·m²/s² فقط', en: 'kg·m²/s² only' }, { ar: 'rad/s', en: 'rad/s' }], correct: 0, answer: { ar: 'الشغل الدوراني يُقاس بالجول (J) أو نيوتن.متر (N·m)', en: 'Rotational work is measured in Joules (J) or Newton-meters (N·m)' } },
+                { q: { ar: 'عزم ثابت مقداره 50 N·m أثر على جسم فأزاحه زاوياً بمقدار 4 rad. الشغل المبذول:', en: 'A constant torque of 50 N·m acted on a body rotating it by 4 rad. Work done:' }, options: [{ ar: '12.5 J', en: '12.5 J' }, { ar: '200 J', en: '200 J' }, { ar: '54 J', en: '54 J' }, { ar: '46 J', en: '46 J' }], correct: 1, answer: { ar: 'W = τ × θ = 50 × 4 = 200 J', en: 'W = τ × θ = 50 × 4 = 200 J' } },
+                { q: { ar: 'إذا كان عزم القوة عمودياً على الإزاحة الزاوية (θ = 90°)، فإن الشغل:', en: 'If torque is perpendicular to angular displacement (θ = 90°), the work:' }, options: [{ ar: 'أقصى قيمة', en: 'Maximum value' }, { ar: 'يساوي صفراً', en: 'Equals zero' }, { ar: 'سالب دائماً', en: 'Always negative' }, { ar: 'يساوي τ × θ', en: 'Equals τ × θ' }], correct: 1, answer: { ar: 'W = τθ cos(90°) = 0 (لا يُبذل شغل)', en: 'W = τθ cos(90°) = 0 (no work is done)' } }
+            ]
+        },
+        {
+            id: 'sec2',
+            title: { ar: '🔹 الجزء الثاني: القدرة الدورانية', en: '🔹 Part 2: Rotational Power' },
+            questions: [
+                { q: { ar: 'القدرة الدورانية (P) تُحسب من العلاقة:', en: 'Rotational power (P) is calculated from:' }, options: [{ ar: 'P = τ × ω', en: 'P = τ × ω' }, { ar: 'P = τ / ω', en: 'P = τ / ω' }, { ar: 'P = τ × θ', en: 'P = τ × θ' }, { ar: 'P = I × α', en: 'P = I × α' }], correct: 0, answer: { ar: 'القدرة الدورانية = عزم القوة × السرعة الزاوية (P = τω)', en: 'Rotational power = torque × angular velocity (P = τω)' } },
+                { q: { ar: 'محرك يولد عزم 100 N·m ويدور بسرعة 50 rad/s. القدرة الناتجة:', en: 'A motor generates torque 100 N·m and rotates at 50 rad/s. Power output:' }, options: [{ ar: '2 W', en: '2 W' }, { ar: '5000 W', en: '5000 W' }, { ar: '500 W', en: '500 W' }, { ar: '150 W', en: '150 W' }], correct: 1, answer: { ar: 'P = τ × ω = 100 × 50 = 5000 W = 5 kW', en: 'P = τ × ω = 100 × 50 = 5000 W = 5 kW' } },
+                { q: { ar: 'وحدة القدرة الدورانية في النظام الدولي هي:', en: 'The SI unit of rotational power is:' }, options: [{ ar: 'J', en: 'J' }, { ar: 'N·m', en: 'N·m' }, { ar: 'W (واط) أو J/s', en: 'W (Watt) or J/s' }, { ar: 'rad/s', en: 'rad/s' }], correct: 2, answer: { ar: 'القدرة تُقاس بالواط (W) = جول/ثانية', en: 'Power is measured in Watts (W) = Joules/second' } },
+                { q: { ar: 'إذا تضاعفت السرعة الزاوية مع ثبات العزم، فإن القدرة:', en: 'If angular velocity doubles with constant torque, power:' }, options: [{ ar: 'تبقى ثابتة', en: 'Remains constant' }, { ar: 'تتضاعف', en: 'Doubles' }, { ar: 'تزداد 4 أضعاف', en: 'Increases 4 times' }, { ar: 'تقل للنصف', en: 'Halves' }], correct: 1, answer: { ar: 'P = τω، فتضاعف ω يعني مضاعفة P (علاقة طردية)', en: 'P = τω, so doubling ω doubles P (direct relationship)' } }
+            ]
+        },
+        {
+            id: 'sec3',
+            title: { ar: '🔹 الجزء الثالث: مبرهنة الشغل-الطاقة', en: '🔹 Part 3: Work-Energy Theorem' },
+            questions: [
+                { q: { ar: 'مبرهنة الشغل-الطاقة الدورانية تنص على أن:', en: 'The rotational work-energy theorem states that:' }, options: [{ ar: 'W = ΔKE_rot = ½Iω₂² - ½Iω₁²', en: 'W = ΔKE_rot = ½Iω₂² - ½Iω₁²' }, { ar: 'W = τ × θ فقط', en: 'W = τ × θ only' }, { ar: 'W = mgh', en: 'W = mgh' }, { ar: 'W = F × d', en: 'W = F × d' }], correct: 0, answer: { ar: 'الشغل الدوراني الكلي = التغير في الطاقة الحركية الدورانية', en: 'Net rotational work = change in rotational kinetic energy' } },
+                { q: { ar: 'قرص عزم قصوره 2 kg·m² كان ساكناً ثم أثر عليه عزم 10 N·m فدوره زاوياً 5 rad. سرعته الزاوية النهائية:', en: 'A disk with I = 2 kg·m² was at rest, then torque 10 N·m rotated it by 5 rad. Final angular velocity:' }, options: [{ ar: '5 rad/s', en: '5 rad/s' }, { ar: '√50 ≈ 7.07 rad/s', en: '√50 ≈ 7.07 rad/s' }, { ar: '25 rad/s', en: '25 rad/s' }, { ar: '10 rad/s', en: '10 rad/s' }], correct: 1, answer: { ar: 'W = τθ = 50 J = ½Iω² → 50 = ½(2)ω² → ω² = 50 → ω = √50 ≈ 7.07 rad/s', en: 'W = τθ = 50 J = ½Iω² → 50 = ½(2)ω² → ω² = 50 → ω = √50 ≈ 7.07 rad/s' } },
+                { q: { ar: 'لإيقاف دولاب عزم قصوره 4 kg·m² يدور بسرعة 10 rad/s، الشغل المطلوب:', en: 'To stop a wheel with I = 4 kg·m² rotating at 10 rad/s, required work:' }, options: [{ ar: '200 J', en: '200 J' }, { ar: '-200 J', en: '-200 J' }, { ar: '400 J', en: '400 J' }, { ar: '0 J', en: '0 J' }], correct: 1, answer: { ar: 'W = ½I(0² - 10²) = ½(4)(-100) = -200 J (شغل سالب لإيقاف الدوران)', en: 'W = ½I(0² - 10²) = ½(4)(-100) = -200 J (negative work to stop rotation)' } },
+                { q: { ar: 'في مبرهنة الشغل-الطاقة الدورانية، إذا كان W = 0 فإن:', en: 'In the rotational work-energy theorem, if W = 0 then:' }, options: [{ ar: 'الجسم ساكن دائماً', en: 'Body is always at rest' }, { ar: 'السرعة الزاوية ثابتة (ω₁ = ω₂)', en: 'Angular velocity is constant (ω₁ = ω₂)' }, { ar: 'العزم كبير جداً', en: 'Torque is very large' }, { ar: 'عزم القصور = صفر', en: 'Moment of inertia = zero' }], correct: 1, answer: { ar: 'W = 0 → ΔKE = 0 → ω₁ = ω₂ (لا تغير في الطاقة)', en: 'W = 0 → ΔKE = 0 → ω₁ = ω₂ (no change in energy)' } }
+            ]
+        },
+        {
+            id: 'sec4',
+            title: { ar: '🔹 الجزء الرابع: المقارنة: خطي مقابل دوراني', en: '🔹 Part 4: Linear vs Rotational Comparison' },
+            questions: [
+                { q: { ar: 'نظير القوة (F) في الحركة الدورانية هو:', en: 'The analog of force (F) in rotational motion is:' }, options: [{ ar: 'عزم القصور (I)', en: 'Moment of inertia (I)' }, { ar: 'عزم القوة (τ)', en: 'Torque (τ)' }, { ar: 'السرعة الزاوية (ω)', en: 'Angular velocity (ω)' }, { ar: 'الإزاحة الزاوية (θ)', en: 'Angular displacement (θ)' }], correct: 1, answer: { ar: 'القوة F ↔ عزم القوة τ (كلاهما يسبب تغيراً في الحركة)', en: 'Force F ↔ Torque τ (both cause change in motion)' } },
+                { q: { ar: 'نظير الشغل الخطي (W = Fd) في الحركة الدورانية هو:', en: 'The analog of linear work (W = Fd) in rotational motion is:' }, options: [{ ar: 'W = τω', en: 'W = τω' }, { ar: 'W = τθ', en: 'W = τθ' }, { ar: 'W = Iα', en: 'W = Iα' }, { ar: 'W = ½Iω²', en: 'W = ½Iω²' }], correct: 1, answer: { ar: 'الشغل الخطي Fd ↔ الشغل الدوراني τθ', en: 'Linear work Fd ↔ Rotational work τθ' } },
+                { q: { ar: 'نظير القدرة الخطية (P = Fv) في الحركة الدورانية هو:', en: 'The analog of linear power (P = Fv) in rotational motion is:' }, options: [{ ar: 'P = τθ', en: 'P = τθ' }, { ar: 'P = Iα', en: 'P = Iα' }, { ar: 'P = τω', en: 'P = τω' }, { ar: 'P = ½Iω²' }, ], correct: 2, answer: { ar: 'القدرة الخطية Fv ↔ القدرة الدورانية τω', en: 'Linear power Fv ↔ Rotational power τω' } },
+                { q: { ar: 'الجدول الصحيح للمقارنة بين الكميات الخطية والدورانية:', en: 'The correct table comparing linear and rotational quantities:' }, options: [{ ar: 'F ↔ τ, m ↔ I, v ↔ ω, KE = ½mv² ↔ KE = ½Iω²', en: 'F ↔ τ, m ↔ I, v ↔ ω, KE = ½mv² ↔ KE = ½Iω²' }, { ar: 'F ↔ I, m ↔ τ, v ↔ α', en: 'F ↔ I, m ↔ τ, v ↔ α' }, { ar: 'F ↔ ω, m ↔ θ, v ↔ τ', en: 'F ↔ ω, m ↔ θ, v ↔ τ' }, { ar: 'F ↔ KE, m ↔ W, v ↔ P', en: 'F ↔ KE, m ↔ W, v ↔ P' }], correct: 0, answer: { ar: 'المقارنة الصحيحة: F↔τ, m↔I, v↔ω, KE=½mv²↔½Iω²', en: 'Correct comparison: F↔τ, m↔I, v↔ω, KE=½mv²↔½Iω²' } }
+            ]
+        },
+        {
+            id: 'sec5',
+            title: { ar: '🔹 الجزء الخامس: حفظ الطاقة والمسائل التطبيقية', en: '🔹 Part 5: Energy Conservation & Applications' },
+            questions: [
+                { q: { ar: 'أسطوانة صلبة تتدحرج من ارتفاع h. عند أسفل المنحدر، الطاقة الكلية:', en: 'A solid cylinder rolls down from height h. At bottom, total energy:' }, options: [{ ar: '½mv² فقط', en: '½mv² only' }, { ar: '½Iω² فقط', en: '½Iω² only' }, { ar: '½mv² + ½Iω² = mgh', en: '½mv² + ½Iω² = mgh' }, { ar: 'mgh فقط', en: 'mgh only' }], correct: 2, answer: { ar: 'الطاقة الكامنة تتحول لطاقة خطية ودورانية معاً: mgh = ½mv² + ½Iω²', en: 'Potential energy converts to linear + rotational KE: mgh = ½mv² + ½Iω²' } },
+                { q: { ar: 'أسطوانة صلبة (I = ½MR²) تتدحرج بدون انزلاق. نسبة الطاقة الدورانية للطاقة الكلية:', en: 'A solid cylinder (I = ½MR²) rolls without slipping. Ratio of rotational KE to total KE:' }, options: [{ ar: '½', en: '½' }, { ar: '⅓', en: '⅓' }, { ar: '¼', en: '¼' }, { ar: '⅔', en: '⅔' }], correct: 1, answer: { ar: 'KE_rot = ½(½MR²)(v/R)² = ¼Mv², KE_total = ¾Mv² → Ratio = ⅓', en: 'KE_rot = ¼Mv², KE_total = ¾Mv² → Ratio = ⅓' } },
+                { q: { ar: 'حلقة (I = MR²) وأسطوانة (I = ½MR²) لهما نفس الكتلة ونصف القطر وبدتا من نفس الارتفاع. أيهما يصل أولاً؟', en: 'A ring (I = MR²) and cylinder (I = ½MR²) with same mass and radius start from same height. Which arrives first?' }, options: [{ ar: 'الحلقة', en: 'Ring' }, { ar: 'الأسطوانة', en: 'Cylinder' }, { ar: 'يصلان معاً', en: 'Arrive together' }, { ar: 'لا يمكن التحديد', en: 'Cannot be determined' }], correct: 1, answer: { ar: 'الأسطوانة لها I أصغر → طاقة دورانية أقل → طاقة خطية أكبر → سرعة أكبر', en: 'Cylinder has smaller I → less rotational KE → more linear KE → higher speed' } },
+                { q: { ar: 'كرة صلبة (I = ²⁄₅MR²) سرعتها عند أسفل منحدر ارتفاعه h:', en: 'A solid sphere (I = ²⁄₅MR²) speed at bottom of height h incline:' }, options: [{ ar: 'v = √(gh)', en: 'v = √(gh)' }, { ar: 'v = √(2gh)', en: 'v = √(2gh)' }, { ar: 'v = √(10gh/7)', en: 'v = √(10gh/7)' }, { ar: 'v = √(4gh/3)', en: 'v = √(4gh/3)' }], correct: 2, answer: { ar: 'mgh = ½mv² + ½(²⁄₅MR²)(v/R)² = ½mv² + ¹⁄₅mv² = ⁷⁄₁₀mv² → v = √(10gh/7)', en: 'mgh = ⁷⁄₁₀mv² → v = √(10gh/7)' } }
+            ]
+        }
+    ]
+};
+
+let currentLang = 'ar';
+let timeRemaining = 3600;
+let timerInterval;
+
+function setLanguage(lang) {
+    currentLang = lang;
+    document.documentElement.lang = lang;
+    document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+    document.getElementById('btn-ar').classList.toggle('active', lang === 'ar');
+    document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+    document.body.classList.toggle('en-mode', lang === 'en');
+    document.querySelectorAll('[data-ar][data-en]').forEach(el => {
+        el.textContent = el.getAttribute(`data-${lang}`);
+    });
+    renderExam();
+}
+
+function renderExam() {
+    const container = document.getElementById('exam-content');
+    const labels = {
+        ar: { option: ['أ', 'ب', 'ج', 'د'], answer: '✅ الإجابة:' },
+        en: { option: ['A', 'B', 'C', 'D'], answer: '✅ Answer:' }
+    };
+    const lbl = labels[currentLang];
+    const isRTL = currentLang === 'ar';
+
+    let html = '';
+    let globalIdx = 1;
+
+    examData.sections.forEach((section) => {
+        html += `<section class="bg-white p-6 rounded-xl shadow-lg">
+            <h2 class="text-xl font-bold mb-4 text-teal-700">${section.title[currentLang]}</h2>
+            <ol class="space-y-4 text-sm">`;
+
+        section.questions.forEach((q) => {
+            const borderSide = isRTL ? 'border-r-4 pr-4' : 'border-l-4 pl-4';
+            html += `<li class="${borderSide} border-teal-500 py-2" id="q-${globalIdx}">
+                <strong>${globalIdx}.</strong> ${q.q[currentLang]}<br>`;
+
+            q.options.forEach((opt, oIdx) => {
+                const radioSide = isRTL ? 'mr-4 ml-2' : 'ml-4 mr-2';
+                html += `<label class="cursor-pointer block mt-1 ${isRTL ? 'mr-4' : 'ml-4'}">
+                    <input type="radio" name="q${globalIdx}" value="${String.fromCharCode(97 + oIdx)}" class="${radioSide}">
+                    ${lbl.option[oIdx]}) ${opt[currentLang]}
+                </label>`;
+            });
+
+            html += `<div class="answer-box text-green-700 mt-2 font-medium hidden">
+                ${lbl.answer} ${lbl.option[q.correct]}) ${q.options[q.correct][currentLang]} — ${q.answer[currentLang]}
+            </div></li>`;
+            globalIdx++;
+        });
+
+        html += `</ol></section>`;
+    });
+
+    container.innerHTML = html;
+}
+
+function startTimer() {
+    document.getElementById('timer-container').style.display = 'block';
+    timerInterval = setInterval(() => {
+        timeRemaining--;
+        const minutes = Math.floor(timeRemaining / 60);
+        const seconds = timeRemaining % 60;
+        const timerEl = document.getElementById('timer');
+        timerEl.textContent = `${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+        if (timeRemaining <= 300) timerEl.classList.add('timer-warning');
+        if (timeRemaining <= 0) {
+            clearInterval(timerInterval);
+            alert(currentLang === 'ar' ? "انتهى الوقت! سيتم تسليم الامتحان تلقائياً." : "Time's up!");
+            gradeExam();
+        }
+    }, 1000);
+}
+
+function toggleAnswers() {
+    document.querySelectorAll('.answer-box').forEach(el => el.classList.toggle('hidden'));
+}
+
+function gradeExam() {
+    let correctCount = 0;
+    const correctAnswersLetters = ['a','b','b','b','a','b','c','b','a','b','b','a','b','a','c','a','c','b','b','c'];
+    let sec1=0, sec2=0, sec3=0, sec4=0, sec5=0;
+
+    for (let i = 1; i <= 20; i++) {
+        const selected = document.querySelector(`input[name="q${i}"]:checked`);
+        const li = document.getElementById(`q-${i}`);
+        const isCorrect = selected && selected.value === correctAnswersLetters[i-1];
+
+        if (isCorrect) {
+            correctCount++;
+            li.classList.add('correct');
+            li.classList.remove('incorrect');
+            if (i <= 4) sec1++;
+            else if (i <= 8) sec2++;
+            else if (i <= 12) sec3++;
+            else if (i <= 16) sec4++;
+            else sec5++;
+        } else {
+            li.classList.add('incorrect');
+            li.classList.remove('correct');
+        }
+    }
+
+    const score = (correctCount / 20) * 100;
+    const successRate = Math.round(score);
+
+    document.getElementById('res-total').textContent = `${Math.round(score)} / 100`;
+    document.getElementById('res-name').textContent = document.getElementById('studentName').value || (currentLang === 'ar' ? 'طالب' : 'Student');
+    document.getElementById('res-date').textContent = new Date().toLocaleDateString(currentLang === 'ar' ? 'ar-AE' : 'en-US');
+    document.getElementById('sec1-score').textContent = `${sec1}/4`;
+    document.getElementById('sec2-score').textContent = `${sec2}/4`;
+    document.getElementById('sec3-score').textContent = `${sec3}/4`;
+    document.getElementById('sec4-score').textContent = `${sec4}/4`;
+    document.getElementById('sec5-score').textContent = `${sec5}/4`;
+
+    const badge = document.getElementById('success-badge');
+    document.getElementById('success-percent').textContent = `${successRate}%`;
+
+    if (currentLang === 'ar') {
+        if (successRate >= 90) { badge.textContent = 'ممتاز'; badge.className = 'success-badge grade-excellent'; }
+        else if (successRate >= 75) { badge.textContent = 'جيد جداً'; badge.className = 'success-badge grade-good'; }
+        else if (successRate >= 50) { badge.textContent = 'جيد'; badge.className = 'success-badge grade-pass'; }
+        else { badge.textContent = 'يحتاج تحسين'; badge.className = 'success-badge grade-fail'; }
+    } else {
+        if (successRate >= 90) { badge.textContent = 'Excellent'; badge.className = 'success-badge grade-excellent'; }
+        else if (successRate >= 75) { badge.textContent = 'Very Good'; badge.className = 'success-badge grade-good'; }
+        else if (successRate >= 50) { badge.textContent = 'Good'; badge.className = 'success-badge grade-pass'; }
+        else { badge.textContent = 'Needs Improvement'; badge.className = 'success-badge grade-fail'; }
+    }
+
+    document.getElementById('results-panel').classList.remove('hidden');
+    document.getElementById('results-panel').scrollIntoView({ behavior: 'smooth' });
+    document.getElementById('sendEmailBtn').classList.remove('hidden');
+}
+
+function sendResultsToEmail() {
+    const btn = document.getElementById('sendEmailBtn');
+    const status = document.getElementById('emailStatus');
+    btn.disabled = true;
+    btn.textContent = currentLang === 'ar' ? '⏳ جاري الإرسال...' : '⏳ Sending...';
+
+    const name = document.getElementById('studentName').value || 'N/A';
+    const studentClass = document.getElementById('studentClass').value || 'N/A';
+    const date = document.querySelector('input[type="text"]').value || new Date().toLocaleDateString();
+    const score = document.getElementById('res-total').textContent;
+    const successRate = document.getElementById('success-percent').textContent;
+
+    const PUBLIC_KEY = "Rb3Lq8tXaFmc5YHUH";
+    const SERVICE_ID = "service_w15m64i";
+    const TEMPLATE_ID = "template_5b0u2tq";
+    const TARGET_EMAIL = "mohammedhesham872@gmail.com";
+
+    emailjs.init(PUBLIC_KEY);
+    emailjs.send(SERVICE_ID, TEMPLATE_ID, {
+        to_email: TARGET_EMAIL, student_name: name, exam_date: date,
+        total_score: score, success_rate: successRate,
+        answers_table: `Score: ${score}, Rate: ${successRate}`
+    }).then(() => {
+        status.textContent = '✅ تم الإرسال بنجاح!';
+        status.style.color = '#059669';
+    }).catch(err => {
+        status.textContent = '❌ فشل الإرسال';
+        status.style.color = '#dc2626';
+        btn.disabled = false;
+    });
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+    renderExam();
+    startTimer();
+});
+</script>
+</body>
+</html>
